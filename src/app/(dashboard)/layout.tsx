@@ -2,11 +2,11 @@
 
 import { useState, useEffect, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
-import { AuthProvider, useAuth } from "@/contexts/auth-context";
+import { useAuth } from "@/contexts/auth-context";
 import { Sidebar, Header } from "@/components/features";
 import { Skeleton } from "@/components/ui/skeleton";
 
-function DashboardLayoutContent({ children }: { children: ReactNode }) {
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -77,13 +77,5 @@ function DashboardLayoutContent({ children }: { children: ReactNode }) {
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
     </div>
-  );
-}
-
-export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return (
-    <AuthProvider>
-      <DashboardLayoutContent>{children}</DashboardLayoutContent>
-    </AuthProvider>
   );
 }
