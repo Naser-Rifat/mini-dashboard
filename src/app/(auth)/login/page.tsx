@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, Suspense, type FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,6 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
@@ -30,9 +29,9 @@ function LoginForm() {
   // Redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated && !authLoading) {
-      router.push(callbackUrl);
+      window.location.href = callbackUrl;
     }
-  }, [isAuthenticated, authLoading, router, callbackUrl]);
+  }, [isAuthenticated, authLoading, callbackUrl]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,10 +39,9 @@ function LoginForm() {
     setIsSubmitting(true);
     try {
       await login(email, password);
-      router.push(callbackUrl);
+      window.location.href = callbackUrl;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
       setIsSubmitting(false);
     }
   }
