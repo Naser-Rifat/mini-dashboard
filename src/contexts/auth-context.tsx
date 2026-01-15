@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import type { AuthState, AuthContextType, AuthUser } from "@/types";
+import { loginAction, logoutAction } from "@/services/auth-actions";
 
 // Mock user data
 const MOCK_USER: AuthUser = {
@@ -86,15 +87,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         : { ...MOCK_USER, email, name: email.split("@")[0] };
 
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
-    document.cookie = "auth_token=mock_token; path=/; max-age=86400";
+    await loginAction(); // Server Action sets cookie
     dispatch({ type: "SUCCESS", user });
   }, []);
 
   // Logout
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     localStorage.removeItem(AUTH_STORAGE_KEY);
-    document.cookie =
-      "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+    await logoutAction(); // Server Action clears cookie
     dispatch({ type: "LOGOUT" });
   }, []);
 
